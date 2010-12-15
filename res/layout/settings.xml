@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+<CheckBox android:text="Enable Spam Filter" android:id="@+id/cbFilterOn" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+<RadioGroup android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/rgFilterMode">
+	<RadioButton android:text="Filter all messages not from my contacts" android:id="@+id/useContacts" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+	<RadioButton android:text="Filter all messages from blacklist" android:id="@+id/useBlacklist" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+</RadioGroup>
+<Button android:text="Add blacklist number" android:id="@+id/btnAddNum" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+<ListView android:id="@+id/listFilterNumbers"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"/>
+</LinearLayout>
