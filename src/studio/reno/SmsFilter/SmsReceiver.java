@@ -12,7 +12,6 @@ public class SmsReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) 
     {
-    	Config config = Config.instance(context);
         //---get the SMS message passed in---
         Bundle bundle = intent.getExtras();        
         SmsMessage[] msgs = null;
@@ -30,7 +29,7 @@ public class SmsReceiver extends BroadcastReceiver
             
             //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
             Log.d("sms",str);
-            if (checker.isSpam(config, msgs)) this.abortBroadcast();
+            if (checker.isSpam(context, msgs)) this.abortBroadcast();
         }                         
     }
 }
