@@ -4,14 +4,8 @@ import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
-import android.provider.Contacts.People;
-import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.SmsMessage;
-import android.util.Log;
 
 public class SmsChecker {
 	private static SmsChecker filter = null;
@@ -36,9 +30,8 @@ public class SmsChecker {
 			&& (config.get("useBlacklist", true)?Pattern.matches(config.get("compiledblacklist", "^$"), sender):true);
 	}
 
-	private boolean isContact(Context context, String num) {
+	public static boolean isContact(Context context, String num) {
 		Cursor cur = context.getContentResolver().query(Phone.CONTENT_URI, new String[] {Phone.NUMBER},Phone.NUMBER+"=?",new String[]{num},null);
-//		Log.d("checker",num+" is"+(cur.getCount()>0?"":" not")+" contact");
 		return cur.getCount()>0;
 	}
 }

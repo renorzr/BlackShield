@@ -29,7 +29,16 @@ public class SmsReceiver extends BroadcastReceiver
             
             //Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
             Log.d("sms",str);
-            if (checker.isSpam(context, msgs)) this.abortBroadcast();
+            if (checker.isSpam(context, msgs)) {
+            	saveToTrash(context, msgs);
+            	this.abortBroadcast();
+            	context.sendBroadcast(new Intent("UPDATE_TRASH"));
+            }
         }                         
     }
+
+	private void saveToTrash(Context context, SmsMessage[] msgs) {
+		Trash trash = Trash.instance(context);
+		trash.add(msgs);
+	}
 }

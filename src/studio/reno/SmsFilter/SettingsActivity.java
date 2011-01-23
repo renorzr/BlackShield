@@ -7,8 +7,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.method.DigitsKeyListener;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,10 +28,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class SettingsActivity extends Activity {
+	protected static final int ADDBLNUM = 0;
 	Dialog dlg;
 	List<String> blacklist = new LinkedList<String>();
 	CheckBox cbFilterOn;
@@ -30,11 +42,14 @@ public class SettingsActivity extends Activity {
 	RadioButton useContacts;
 	RadioButton useBlacklist;
 	Button btnAddNum;
+	Button btnAddNumFromInbox;
 	ListView blacklistView;
 	Config config;
-	
+	Resources res;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        res = getResources();
         setContentView(R.layout.settings);
     
         config = Config.instance(this);
@@ -49,6 +64,7 @@ public class SettingsActivity extends Activity {
 		boolean blacklistOn = config.get("useBlacklist", true);
 		
 		btnAddNum = (Button) findViewById(R.id.btnAddNum);
+		btnAddNumFromInbox = (Button) findViewById(R.id.btnAddNumFromInbox);
 		cbFilterOn = (CheckBox)findViewById(R.id.cbFilterOn);
 		rgFilterMode = (RadioGroup)findViewById(R.id.rgFilterMode);
 		useContacts = (RadioButton)findViewById(R.id.useContacts);
@@ -62,23 +78,31 @@ public class SettingsActivity extends Activity {
 		btnAddNum.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				final EditText input = new EditText(SettingsActivity.this);
-				input.setSingleLine();
+				final EditText numInput = getNumInput();
 				new AlertDialog.Builder(SettingsActivity.this)
-				.setTitle("Add blacklist number")
-				.setMessage("? and * matches single/multiple number(s)")
-				.setView(input)
-				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				.setTitle(R.string.add_blacklist)
+				.setMessage(R.string.add_blacklist_tip)
+				.setView(numInput)
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
-							addBlacklistNumber(input.getText().toString());
+							addBlacklistNumber(numInput.getText().toString());
 						}
 				})
-				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {}
 				})
 				.show();
 			}
         });
+		
+		btnAddNumFromInbox.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				Intent i = new Intent();
+				i.setClass(SettingsActivity.this, AddBlacklistNumActivity.class);
+				startActivityForResult(i, ADDBLNUM);
+			}			
+		});
         
         cbFilterOn.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
@@ -97,12 +121,64 @@ public class SettingsActivity extends Activity {
         });
 	}
 	
+	private EditText getNumInput(){
+		EditText v = new EditText(this);
+		v.setKeyListener(new DigitsKeyListener(){
+			@Override
+			protected char[] getAcceptedChars() {
+				return new char[]{'0','1','2','3','4','5','6','7','8','9','+','?','*'};
+			}
+		});
+		v.setSingleLine();
+
+		return v;
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+		switch (requestCode){
+		case ADDBLNUM:
+			if (resultCode == RESULT_OK){
+				String num = data.getExtras().getString("number");
+				addBlacklistNumber(num);
+				Toast.makeText(this, String.format(res.getString(R.string.num_added), num), Toast.LENGTH_SHORT).show();
+			}
+			break;
+		}
+    }
+	
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//    	menu.add(res.getString(R.string.about)).setOnMenuItemClickListener(new OnMenuItemClickListener(){
+//			@Override
+//			public boolean onMenuItemClick(MenuItem mi) {
+//				TextView message = new TextView(SettingsActivity.this);
+//				SpannableString s = new SpannableString(getText(R.string.about_body));
+//				Linkify.addLinks(s, Linkify.WEB_URLS);
+//				message.setText(s);
+//				message.setMovementMethod(LinkMovementMethod.getInstance());
+//
+//				new AlertDialog.Builder(SettingsActivity.this)
+//				.setTitle(R.string.app_name)
+//				.setView(message)
+//				//.setMessage(R.string.about_body)
+//				.setPositiveButton(R.string.ok, null)
+//				.show();
+//				return false;
+//			}    		
+//    	});
+//    	
+//    	return true;
+//    }
+    
 	private void updateEnables(){
 		boolean filterOn = cbFilterOn.isChecked();
 		boolean blacklistOn = filterOn && rgFilterMode.getCheckedRadioButtonId()==R.id.useBlacklist;
 		useContacts.setEnabled(filterOn);
 		useBlacklist.setEnabled(filterOn);
 		btnAddNum.setEnabled(blacklistOn);
+		btnAddNumFromInbox.setEnabled(blacklistOn);
 		blacklistView.setEnabled(blacklistOn);
 	}
 
@@ -110,16 +186,27 @@ public class SettingsActivity extends Activity {
         blacklistView.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
+				final EditText numInput = getNumInput();
+				numInput.setText(blacklist.get(position));
 				new AlertDialog.Builder(SettingsActivity.this)
-				.setTitle("Remove blacklist number")
-				.setMessage(String.format("Remove \"%s\" from blacklist?", blacklist.get(position)))
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				.setTitle(R.string.remove_blacklist)
+//				.setMessage(String.format(res.getString(R.string.num_remove), blacklist.get(position)))
+				.setView(numInput)
+				.setPositiveButton(R.string.edit, new DialogInterface.OnClickListener(){
+					public void onClick(DialogInterface arg0, int arg1) {
+						blacklist.remove(position);
+						blacklist.add(position, numInput.getText().toString());
+						saveBlacklist();
+						updateBlacklist();
+					}
+				})
+				.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							removeBlacklistNumber(position);
 					        updateBlacklist();
 						}
 				})
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {}
 				})
 				.show();
@@ -161,11 +248,11 @@ public class SettingsActivity extends Activity {
 	}
 	
 	private String compile(List<String> list) {
-		String ret="";
+		String ret="^$";
 		for (String i: list){
 			ret+=("|"+"^"+i.replace("*", "[0-9]+").replace("?", "[0-9]")+"$");
 		}
-		return ret.substring(1);
+		return ret;
 	}
 
 	private String join(List<String> list, String seperator) {
@@ -173,10 +260,12 @@ public class SettingsActivity extends Activity {
 		for (String i: list){
 			if (i.length()>0) joined+=(seperator+i);
 		}
-		return joined.substring(seperator.length());
+		if (joined.length()>seperator.length()) 
+			joined = joined.substring(seperator.length());
+		return joined;
 	}
 
 	private void updateBlacklist(){
-        blacklistView.setAdapter(new ArrayAdapter<String>(SettingsActivity.this, R.layout.listitem, blacklist));
+        blacklistView.setAdapter(new ArrayAdapter<String>(SettingsActivity.this, R.layout.blacklistitem, blacklist));
 	}
 }

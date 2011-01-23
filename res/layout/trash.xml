@@ -5,11 +5,14 @@
     android:layout_height="fill_parent">
     
 	<ListView android:id="@+id/spamlist" 
-		android:layout_width="wrap_content" 
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
 	</ListView>
-	<TextView 
-		android:text="no spam"
+	<TextView
+		android:id="@+id/trash_empty"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"/>
+		android:layout_height="fill_parent"
+		android:text="@string/trash_empty"
+		android:gravity="center_horizontal"
+		/>
 </LinearLayout>

@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Main!</string>
-    <string name="app_name">SmsFilter</string>
+    <string name="app_name">仁王盾</string>
+    <string name="settings">设置</string>
+    <string name="trash">垃圾箱</string>
+    <string name="statistics">统计</string>
+    <string name="enable_filter">开启短信过滤</string>
+    <string name="trash_all">拦截所有来自陌生号码的短信</string>
+    <string name="trash_blacklist">拦截来自黑名单号码的短信</string>
+    <string name="blacklist">黑名单</string>
+    <string name="num_added">%s加入了黑名单</string>
+    <string name="add_blacklist">添加号码</string>
+    <string name="add_blacklist_from_inbox">从收件箱添加</string>
+    <string name="add_blacklist_tip">"?或*可匹配一个或多个数字"</string>
+    <string name="remove_blacklist">修改/删除黑名单号码</string>
+    <string name="num_remove">"从黑名单删除号码\"%s\"?</string>
+    <string name="send_from">发自</string>
+    <string name="add_contact_num">恢复时把号码加为联系人</string>
+    <string name="restore">恢复</string>
+    <string name="delete">删除</string>
+    <string name="edit">修改</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="clear_all">清空</string>
+    <string name="trash_empty">空</string>
+    <string name="about">关于</string>
+    <string name="about_body">版本：1.0 \nhttp://ren.zhirui.me</string>
 </resources>

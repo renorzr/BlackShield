@@ -29,6 +29,7 @@ public class Config {
 			FileInputStream fis = context.openFileInput(CONFIG_FILENAME);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			map = (Map<String,String>) ois.readObject();
+			ois.close();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -41,6 +42,7 @@ public class Config {
 			FileOutputStream fos = context.openFileOutput(CONFIG_FILENAME, Context.MODE_PRIVATE);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(map);
+			oos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
