@@ -29,14 +29,12 @@ import android.widget.TextView;
     	@Override
 		public View getView(int position, View convertView, ViewGroup parent){
     		Log.d("T","getView "+position);
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.trashitem, null);
-                HashMap<String,String> msg=data.get(position);
-                ((TextView)convertView.findViewById(R.id.smsfrom)).setText(msg.get("from"));
-                ((TextView)convertView.findViewById(R.id.smscontent)).setText(msg.get("content"));
-//                ((TextView)convertView.findViewById(R.id.smscontent)).setText("red fox jump over brown lazy dog.red fox jump over brown lazy dog.red fox jump over brown lazy dog.red fox jump over brown lazy dog.red fox jump over brown lazy dog.red fox jump over brown lazy dog.");
-                ((TextView)convertView.findViewById(R.id.smstime)).setText(formatTime(Long.parseLong(msg.get("time"))));
-            }
+            if (convertView == null) convertView = inflater.inflate(R.layout.trashitem, null);
+            HashMap<String,String> msg=data.get(position);
+            ((TextView)convertView.findViewById(R.id.smsfrom)).setText(msg.get("from"));
+            ((TextView)convertView.findViewById(R.id.smscontent)).setText(msg.get("content"));
+            ((TextView)convertView.findViewById(R.id.smstime)).setText(formatTime(Long.parseLong(msg.get("time"))));
+
             return convertView;
     	}
 
