@@ -10,10 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.SpannableString;
 import android.text.method.DigitsKeyListener;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -148,29 +144,29 @@ public class SettingsActivity extends Activity {
 		}
     }
 	
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//    	menu.add(res.getString(R.string.about)).setOnMenuItemClickListener(new OnMenuItemClickListener(){
-//			@Override
-//			public boolean onMenuItemClick(MenuItem mi) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	menu.add(res.getString(R.string.about)).setOnMenuItemClickListener(new OnMenuItemClickListener(){
+			@Override
+			public boolean onMenuItemClick(MenuItem mi) {
 //				TextView message = new TextView(SettingsActivity.this);
 //				SpannableString s = new SpannableString(getText(R.string.about_body));
 //				Linkify.addLinks(s, Linkify.WEB_URLS);
 //				message.setText(s);
 //				message.setMovementMethod(LinkMovementMethod.getInstance());
-//
-//				new AlertDialog.Builder(SettingsActivity.this)
-//				.setTitle(R.string.app_name)
+
+				new AlertDialog.Builder(SettingsActivity.this)
+				.setTitle(R.string.app_name)
 //				.setView(message)
-//				//.setMessage(R.string.about_body)
-//				.setPositiveButton(R.string.ok, null)
-//				.show();
-//				return false;
-//			}    		
-//    	});
-//    	
-//    	return true;
-//    }
+				.setMessage(R.string.about_body)
+				.setPositiveButton(R.string.ok, null)
+				.show();
+				return false;
+			}    		
+    	});
+    	
+    	return true;
+    }
     
 	private void updateEnables(){
 		boolean filterOn = cbFilterOn.isChecked();
