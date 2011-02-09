@@ -69,7 +69,7 @@ public class TrashActivity extends Activity {
 				final String num = msg.get("from");
 				new AlertDialog.Builder(TrashActivity.this)
 				.setTitle(res.getString(R.string.send_from)+num)
-				.setMessage(String.format(msg.get("content")))
+				.setMessage(msg.get("content"))
 				.setView(cbAddContactNum)
 				.setPositiveButton(res.getString(R.string.delete), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {

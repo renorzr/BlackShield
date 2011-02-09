@@ -1,5 +1,6 @@
 package studio.reno.SmsFilter;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
 import android.view.Menu;
@@ -136,8 +138,20 @@ public class SettingsActivity extends Activity {
 		switch (requestCode){
 		case ADDBLNUM:
 			if (resultCode == RESULT_OK){
-				String num = data.getExtras().getString("number");
+				Bundle extras = data.getExtras();
+				String num = extras.getString("number");
+				boolean trashMsg = extras.getBoolean("trashMsg");
 				addBlacklistNumber(num);
+				if (trashMsg){
+					HashMap<String,String> msg = new HashMap<String,String>();
+					String msgId = extras.get("id").toString();
+					msg.put("id", msgId);
+					msg.put("from", extras.get("from").toString());
+					msg.put("content", extras.get("content").toString());
+					msg.put("time", extras.get("time").toString());
+					Trash.instance(this).add(msg);
+					getContentResolver().delete(Uri.parse("content://sms"), "_id=?", new String[]{msgId});
+				}
 				Toast.makeText(this, String.format(res.getString(R.string.num_added), num), Toast.LENGTH_SHORT).show();
 			}
 			break;
@@ -232,7 +246,9 @@ public class SettingsActivity extends Activity {
     }
     
 	private void addBlacklistNumber(String num) {
-//		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		for (String bln: blacklist){
+			if (bln.equals(num)) return;
+		}
 		blacklist.add(num);
 		saveBlacklist();
 		updateBlacklist();

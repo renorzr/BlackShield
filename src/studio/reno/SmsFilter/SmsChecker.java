@@ -1,5 +1,6 @@
 package studio.reno.SmsFilter;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
@@ -31,7 +32,14 @@ public class SmsChecker {
 	}
 
 	public static boolean isContact(Context context, String num) {
-		Cursor cur = context.getContentResolver().query(Phone.CONTENT_URI, new String[] {Phone.NUMBER},Phone.NUMBER+"=?",new String[]{num},null);
+		num=stripCountryCode(num).replace("-", "");
+		Cursor cur = context.getContentResolver().query(Phone.CONTENT_URI, new String[] {Phone.NUMBER},String.format("substr(replace(%s,\"-\",\"\"),%d)==?", Phone.NUMBER,-num.length()),new String[]{num},null);
 		return cur.getCount()>0;
+	}
+
+	private static String stripCountryCode(String num) {
+		Pattern ptn = Pattern.compile("^\\+86");
+		Matcher m = ptn.matcher(num);
+		return m.replaceAll("");
 	}
 }

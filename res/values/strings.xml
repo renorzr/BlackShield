@@ -24,5 +24,7 @@
     <string name="clear_all">清空</string>
     <string name="trash_empty">空</string>
     <string name="about">关于</string>
+    <string name="trash_this_msg">同时把短信转移到垃圾箱</string>
+    <string name="add_this_blnum">把%s加入黑名单</string>
     <string name="about_body">版本：1.0 \nhttp://ren.zhirui.me</string>
 </resources>

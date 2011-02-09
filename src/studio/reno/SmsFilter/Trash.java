@@ -34,6 +34,12 @@ public class Trash {
 		return trashedMsgs;
 	}
 	
+	public void add(HashMap<String,String> msg){
+		load();
+		trashedMsgs.add(msg);
+		save();
+	}
+	
 	public void add(SmsMessage[] msgs){
 		load();
 		for (SmsMessage msg: msgs){
