@@ -51,8 +51,8 @@ public class AddBlacklistNumActivity extends Activity {
 				final String num=msg.get("from");
 				
 				new AlertDialog.Builder(AddBlacklistNumActivity.this)
-				.setTitle(res.getString(R.string.send_from)+num)
-				.setMessage(msg.get("content")+String.format(res.getString(R.string.add_this_blnum),num))
+				.setTitle(String.format(res.getString(R.string.add_this_blnum),num))
+				.setMessage(msg.get("content"))
 				.setView(cbTrashMsg)
 				.setPositiveButton(res.getString(R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
